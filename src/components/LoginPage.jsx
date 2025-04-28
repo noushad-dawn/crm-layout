@@ -84,7 +84,8 @@ const LoginPage = ({ onLoginSuccess }) => {
               </div>
             </div>
             <h2 className="text-2xl font-bold text-gray-800 mb-1">Welcome to Prime Laundry </h2>
-            <p className="text-gray-600">Sign in to access your management dashboard</p>
+            <p className="text-gray-600">Sign in to take your laundry business online</p>
+
           </div>
 
           <form onSubmit={handleLogin} className="space-y-5">
@@ -170,7 +171,7 @@ const LoginPage = ({ onLoginSuccess }) => {
 
           <div className="mt-8 pt-6 border-t border-gray-200">
             <div className="text-center text-sm text-gray-500">
-              <p>New to Prime Laundry Pro? <a href="#" className="font-medium text-emerald-600 hover:text-emerald-500">Request a demo</a></p>
+              <p>New to Prime Laundry? <a href="#" className="font-medium text-emerald-600 hover:text-emerald-500">Request a demo</a></p>
               <p className="mt-2">Need help? <a href="#" className="font-medium text-emerald-600 hover:text-emerald-500">Contact support</a></p>
             </div>
           </div>
