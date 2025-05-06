@@ -1,0 +1,86 @@
+const garmentList = {
+  'Women\'s Clothing': [
+    { _id: '1', productName: 'Blouse' },
+    { _id: '2', productName: 'Coat' },
+    { _id: '3', productName: 'Dupatta' },
+    { _id: '4', productName: 'Jacket' },
+    { _id: '5', productName: 'Jeans' },
+    { _id: '6', productName: 'Jumpsuit' },
+    { _id: '7', productName: 'Kurti' },
+    { _id: '8', productName: 'Leggings' },
+    { _id: '9', productName: 'Lehenga' },
+    { _id: '10', productName: 'Long Coat' },
+    { _id: '11', productName: 'Long Gown' },
+    { _id: '12', productName: 'One Piece' },
+    { _id: '13', productName: 'Pajama' },
+    { _id: '14', productName: 'Petticoat' },
+    { _id: '15', productName: 'Plazo' },
+    { _id: '16', productName: 'Saree' },
+    { _id: '17', productName: 'Scarf' },
+    { _id: '18', productName: 'Shawl' },
+    { _id: '19', productName: 'Sherwani' },
+    { _id: '20', productName: 'Shrug' },
+    { _id: '21', productName: 'Skirt' },
+    { _id: '22', productName: 'Sweater' },
+    { _id: '23', productName: 'Top' },
+    { _id: '24', productName: 'T-Shirt' },
+    { _id: '25', productName: 'Umbrella' },
+    { _id: '26', productName: 'Wedding Gown' },
+    { _id: '27', productName: 'Dhoti' },
+    { _id: '28', productName: 'Hoodie' },
+    { _id: '29', productName: 'Bathrobe' },
+    { _id: '68', productName: 'Salwar' }, // new addition
+    { _id: '69', productName: 'Shirt' }, // new addition for women's shirt
+    { _id: '70', productName: 'Waist Coat' }, // corrected spelling of "West Coat" for women
+  ],
+  
+  'Household Items': [
+    { _id: '30', productName: 'Bed Cover' },
+    { _id: '31', productName: 'Bedsheet (D.B.)' },
+    { _id: '32', productName: 'Bedsheet (S.B.)' },
+    { _id: '33', productName: 'Blanket (D.B.)' },
+    { _id: '34', productName: 'Blanket (S.B.)' },
+    { _id: '35', productName: 'Carpet' },
+    { _id: '36', productName: 'Comforter (D.B.)' },
+    { _id: '37', productName: 'Comforter (S.B.)' },
+    { _id: '38', productName: 'Curtains' },
+    { _id: '39', productName: 'Sofa Cover' },
+    { _id: '40', productName: 'Pillow Cover' },
+    { _id: '71', productName: 'Cushion' }, // new addition
+    { _id: '72', productName: 'Cushion Cover' }, // new addition
+  ],
+
+  'Men\'s Clothing': [
+    { _id: '41', productName: 'Coat' },
+    { _id: '42', productName: 'Handkerchief' },
+    { _id: '43', productName: 'Hoodie' },
+    { _id: '44', productName: 'Jacket' },
+    { _id: '45', productName: 'Jeans' },
+    { _id: '46', productName: 'Kurta' },
+    { _id: '47', productName: 'Leather Jacket' },
+    { _id: '48', productName: 'Long Coat' },
+    { _id: '49', productName: 'Lower' },
+    { _id: '50', productName: 'Pant' },
+    { _id: '51', productName: 'Pajama' },
+    { _id: '52', productName: 'Pullover' },
+    { _id: '53', productName: 'Sando' },
+    { _id: '54', productName: 'Scarf' },
+    { _id: '55', productName: 'Sherwani' },
+    { _id: '56', productName: 'Shirt' },
+    { _id: '57', productName: 'Shorts' },
+    { _id: '58', productName: 'Socks' },
+    { _id: '59', productName: 'Sweater' },
+    { _id: '60', productName: 'Tie' },
+    { _id: '61', productName: 'Towel' },
+    { _id: '62', productName: 'T-shirt' },
+    { _id: '63', productName: 'Undies' },
+    { _id: '64', productName: 'Waist Coat' },
+    { _id: '65', productName: 'Winter Cap' },
+    { _id: '66', productName: 'Dhoti' },
+    { _id: '67', productName: 'Bathrobe' },
+    { _id: '73', productName: 'Blazer' }, // new addition
+    { _id: '74', productName: 'White Shirt' }, // new addition
+  ],
+};
+
+export default garmentList;

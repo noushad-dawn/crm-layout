@@ -2,22 +2,32 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiLock, FiMail, FiCheck, FiShield, FiTruck } from 'react-icons/fi';
 import { GiWashingMachine } from 'react-icons/gi';
+import axios from 'axios';
 
 const LoginPage = ({ onLoginSuccess }) => {
-  const [email, setEmail] = useState('');
+  const [userID, setUserID] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    
-    setTimeout(() => {
-      setIsLoading(false);
-      onLoginSuccess();
-      navigate('/');
-    }, 1000);
+    try {
+      const response = await axios.post(`${config.baseURL}/api/users/login`, {
+        userID,
+        password,
+      });
+      if(response.status === 200 || response.status === 201){
+        localStorage.setItem("authToken", response.data?.token);
+        navigate("/");
+      }
+      else{
+        setError(response.data?.message);
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'something went wrong');
+    }
   };
 
   return (
@@ -68,7 +78,7 @@ const LoginPage = ({ onLoginSuccess }) => {
           
           <div className="mt-10 pt-6 border-t border-emerald-400/30">
             <p className="text-emerald-200 text-sm">
-              Trusted by 1 laundry businesses Raipur (wo paise wapas maang rha hai wo alag baat hai)
+              Trusted by 1 laundry businesses Raipur.
             </p>
           </div>
         </div>
@@ -103,8 +113,8 @@ const LoginPage = ({ onLoginSuccess }) => {
                   type="email"
                   autoComplete="email"
                   required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={userID}
+                  onChange={(e) => setUserID(e.target.value)}
                   className="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200"
                   placeholder="your@business.com"
                 />
