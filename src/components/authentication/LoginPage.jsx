@@ -3,24 +3,30 @@ import { useNavigate } from 'react-router-dom';
 import { FiLock, FiMail, FiCheck, FiShield, FiTruck } from 'react-icons/fi';
 import { GiWashingMachine } from 'react-icons/gi';
 import axios from 'axios';
-
+import config from '../config';
 const LoginPage = ({ onLoginSuccess }) => {
   const [userID, setUserID] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem('token');
     try {
       const response = await axios.post(`${config.baseURL}/api/users/login`, {
         userID,
         password,
-      });
+      }, {headers:{
+        'Authorization':`Bearer ${token}`
+      }}
+    );
+
       if(response.status === 200 || response.status === 201){
         localStorage.setItem("authToken", response.data?.token);
-        navigate("/");
+        navigate("/dashboard");
       }
       else{
         setError(response.data?.message);
@@ -98,7 +104,7 @@ const LoginPage = ({ onLoginSuccess }) => {
 
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-5">
+          <form noValidate onSubmit={handleLogin} className="space-y-5">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">
                 Business Email

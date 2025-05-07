@@ -1,281 +1,5 @@
-// import React, { useState, useEffect } from "react";
-// import config from "../config";
-// import axios from "axios";
-
-// const JourneyOfOrderTable = () => {
-//   const [journeyData, setJourneyData] = useState([]);
-//   const [searchTerm, setSearchTerm] = useState(""); // State for the search input
-//   const [drivers, setDrivers] = useState([]);
-//   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
-//   const [notes, setNotes] = useState({});
-//   const processMap = {
-//     process1: "Inspection",
-//     process2: "washing",
-//     process3: "sorting",
-//     process4: "iron",
-//   };
-
-//   useEffect(() => {
-//     fetchData();
-//     fetchDrivers();
-//   }, []);
-
-//   const openNoteModal = (orderId) => {
-//     fetchNotes(orderId);
-//     setIsNoteModalOpen(true);
-//   };
-
-//   const fetchDrivers = async () => {
-//     try {
-//       const response = await axios.get(`${config.baseURL}/api/drivers/status`);
-//       setDrivers(response.data || []);
-//     } catch (error) {
-//       console.error("Error fetching driver data:", error);
-//     }
-//   };
-
-//   const fetchNotes = async (orderId) => {
-//     try {
-//       const response = await axios.get(`${config.baseURL}/api/note/order/${orderId}`);
-//       setNotes(Array.isArray(response.data) ? response.data : []); // Ensure the data is an array
-//     } catch (error) {
-//       console.error("Error fetching notes", error);
-//     }
-//   };
-
-//   const fetchData = () => {
-//     fetch(`${config.baseURL}/api/processes/order-journey`)
-//       .then((response) => {
-//         if (!response.ok) {
-//           throw new Error("Network response was not ok");
-//         }
-//         return response.json();
-//       })
-//       .then((data) => {
-//         setJourneyData(data); // Set fetched data into state
-//       })
-//       .catch((error) => {
-//         console.error("There was an error fetching the data:", error);
-//         setJourneyData([]);
-//       });
-//   };
-
-//   const filteredData = searchTerm
-//     ? journeyData.filter((item) =>
-//         item.orderId.toLowerCase().includes(searchTerm.toLowerCase())
-//       )
-//     : []; // If no search term, display all orders
-
-//   return (
-//     <div className="container mx-auto p-4">
-//       <h2 className="text-2xl font-bold mb-4">Journey of Orders</h2>
-
-//       {/* Search Input */}
-//       <div className="mb-4">
-//         <input
-//           type="text"
-//           className="px-4 py-2 border border-gray-300 rounded"
-//           placeholder="Search by Order ID"
-//           value={searchTerm}
-//           onChange={(e) => setSearchTerm(e.target.value)}
-//         />
-//       </div>
-
-//       <table className="min-w-full bg-white border border-gray-300">
-//         <thead>
-//           <tr className="bg-gray-200 border border-gray-300">
-//             <th className="py-2 px-4 border border-gray-300">Order ID</th>
-//             <th className="py-2 px-4 border border-gray-300">
-//               Current Process
-//             </th>
-//             <th className="py-2 px-4 border border-gray-300">Inspection</th>
-//             <th className="py-2 px-4 border border-gray-300">Washing</th>
-//             <th className="py-2 px-4 border border-gray-300">Sorting</th>
-//             <th className="py-2 px-4 border border-gray-300">Iron</th>
-//             <th className="py-2 px-4 border border-gray-300">Driver Details</th>
-//             <th className="py-2 px-4 border border-gray-300">Notes</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           {filteredData.length > 0 ? (
-//             filteredData.map((item) => (
-//               <tr
-//                 key={item.orderId}
-//                 className="hover:bg-gray-100 border border-gray-300"
-//               >
-//                 <td className="py-2 px-4 border border-gray-300">
-//                   {item.orderId}
-//                 </td>
-//                 <td className="py-2 px-4 border border-gray-300">
-//                   {processMap[item.currentProcess] || "No process"}
-//                 </td>
-//                 <td className="py-2 px-4 border border-gray-300">
-//                   <p>
-//                     <strong>Time:</strong>{" "}
-//                     {item.process.process1.timing
-//                       ? new Date(item.process.process1.timing).toLocaleString()
-//                       : "null"}
-//                   </p>
-//                   <p>
-//                     <strong>Status:</strong> {item.process.process1.status}
-//                   </p>
-//                   <p>
-//                     <strong>User:</strong> {item.process.process1.userId}
-//                   </p>
-//                 </td>
-//                 <td className="py-2 px-4 border border-gray-300">
-//                   <p>
-//                     <strong>Time:</strong>{" "}
-//                     {item.process.process2.timing
-//                       ? new Date(item.process.process2.timing).toLocaleString()
-//                       : "null"}
-//                   </p>
-//                   <p>
-//                     <strong>Status:</strong> {item.process.process2.status}
-//                   </p>
-//                   <p>
-//                     <strong>User:</strong> {item.process.process2.userId}
-//                   </p>
-//                 </td>
-//                 <td className="py-2 px-4 border border-gray-300">
-//                   <p>
-//                     <strong>Time:</strong>{" "}
-//                     {item.process.process3.timing
-//                       ? new Date(item.process.process3.timing).toLocaleString()
-//                       : "null"}
-//                   </p>
-//                   <p>
-//                     <strong>Status:</strong> {item.process.process3.status}
-//                   </p>
-//                   <p>
-//                     <strong>User:</strong> {item.process.process3.userId}
-//                   </p>
-//                 </td>
-//                 <td className="py-2 px-4 border border-gray-300">
-//                   <p>
-//                     <strong>Time:</strong>{" "}
-//                     {item.process.process4.timing
-//                       ? new Date(item.process.process4.timing).toLocaleString()
-//                       : "null"}
-//                   </p>
-//                   <p>
-//                     <strong>Status:</strong> {item.process.process4.status}
-//                   </p>
-//                   <p>
-//                     <strong>User:</strong> {item.process.process4.userId}
-//                   </p>
-//                 </td>
-//                 <td className="py-2 px-4 border border-gray-300">
-//                   <p>
-//                     <strong>Time: </strong>
-//                     {drivers.find((driver) => driver.orderId === item.orderId)
-//                       ?.createdAt
-//                       ? new Date(
-//                           drivers.find(
-//                             (driver) => driver.orderId === item.orderId
-//                           )?.createdAt
-//                         ).toLocaleString()
-//                       : "N/A"}
-//                   </p>
-//                   <p>
-//                     <strong>Status: </strong>
-//                     {drivers.find((driver) => driver.orderId === item.orderId)
-//                       ?.status || "N/A"}
-//                   </p>
-//                   <p>
-//                     <strong>Driver: </strong>
-//                     {drivers.find((driver) => driver.orderId === item.orderId)
-//                       ?.driverName || "N/A"}
-//                   </p>
-//                 </td>
-//                 <td className="py-2 px-4 border border-gray-300">
-//                   <button
-//                     className="px-4 py-2 bg-blue-500 text-white rounded"
-//                     onClick={() => openNoteModal(item.orderId)} // Pass the entire order object
-//                   >
-//                     View Notes
-//                   </button>
-//                 </td>
-//               </tr>
-//             ))
-//           ) : searchTerm === "" ? (
-//             <tr>
-//               <td
-//                 colSpan="7"
-//                 className="py-4 text-center border border-gray-300"
-//               >
-//                 Search the Orders
-//               </td>
-//             </tr>
-//           ) : (
-//             <tr>
-//               <td
-//                 colSpan="7"
-//                 className="py-4 text-center border border-gray-300"
-//               >
-//                 No Orders Found
-//               </td>
-//             </tr>
-//           )}
-//         </tbody>
-//       </table>
-//       {isNoteModalOpen && (
-//         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-//           <div className="bg-white p-6 rounded shadow-lg w-1/3 relative">
-//             <h3 className="text-xl font-semibold mb-4">Notes for Order</h3>
-
-//             {/* Display existing notes */}
-//             <div className="mb-4 max-h-60 overflow-y-auto p-4 bg-gray-100 rounded-lg shadow-md">
-//               {notes.length > 0 ? (
-//                 notes.map((note) => (
-//                   <div
-//                     key={note._id}
-//                     className="flex items-start justify-between mb-4 p-3 bg-white rounded-lg shadow-sm hover:bg-gray-50"
-//                   >
-//                     <div className="flex flex-col space-y-1 w-full">
-//                       <span className="text-sm text-gray-500">
-//                         {new Date(note.createdAt).toLocaleString()}:
-//                       </span>
-//                       <p className="text-lg text-gray-700 font-medium">
-//                         {note.content}
-//                       </p>
-//                       <p className="text-sm text-gray-500">
-//                         By: {note.createdBy?.name || "Unknown"}
-//                       </p>
-//                     </div>
-//                     {/* <button
-//                       // onClick={() => handleDelete(note._id)} // You'll need to define this function
-//                       className="text-red-500 hover:text-red-700 focus:outline-none font-semibold"
-//                     >
-//                       Delete
-//                     </button> */}
-//                   </div>
-//                 ))
-//               ) : (
-//                 <p className="text-gray-500">
-//                   No notes available for this order.
-//                 </p>
-//               )}
-//             </div>
-//             <button
-//               onClick={() => setIsNoteModalOpen(false)}
-//               className="absolute top-3 right-3 text-red-400 hover:text-gray-600 focus:outline-none text-3xl"
-//               aria-label="Close"
-//             >
-//               &times;
-//             </button>
-//             {/* <button onClick={setIsNoteModalOpen(false)}>close</button> */}
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default JourneyOfOrderTable;
 import React, { useState, useEffect } from "react";
-import config from "../config";
-import axios from "axios";
+import api from '../../api/axios';
 
 const JourneyOfOrderTable = () => {
   const [journeyData, setJourneyData] = useState([]);
@@ -305,7 +29,7 @@ const JourneyOfOrderTable = () => {
 
   const fetchPaymentStatuses = async () => {
     try {
-      const response = await axios.get(`${config.baseURL}/api/orders`);
+      const response = await api.get(`api/orders`);
       const statusMap = {};
       response.data.forEach(order => {
         statusMap[order.orderId] = {
@@ -333,7 +57,7 @@ const JourneyOfOrderTable = () => {
 
   const fetchDrivers = async () => {
     try {
-      const response = await axios.get(`${config.baseURL}/api/drivers`);
+      const response = await api.get(`/api/drivers`);
       setDrivers(response.data || []);
     } catch (error) {
       console.error("Error fetching driver data:", error);
@@ -342,7 +66,7 @@ const JourneyOfOrderTable = () => {
 
   const fetchNotes = async (orderId) => {
     try {
-      const response = await axios.get(`${config.baseURL}/api/note/order/${orderId}`);
+      const response = await api.get(`api/note/order/${orderId}`);
       setNotes(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Error fetching notes", error);
@@ -352,7 +76,7 @@ const JourneyOfOrderTable = () => {
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`${config.baseURL}/api/processes/order-journey`);
+      const response = await api.get(`api/processes/order-journey`);
       setJourneyData(response.data || []);
     } catch (error) {
       console.error("Error fetching journey data:", error);
@@ -383,13 +107,13 @@ const JourneyOfOrderTable = () => {
       setIsLoading(true);
       
       // Update payment status
-      await axios.post(`${config.baseURL}/api/orders/updatePaymentStatus/${orderId}`, {
+      await api.post(`api/orders/updatePaymentStatus/${orderId}`, {
         paymentStatus: status,
       });
 
       // Update payment method if status is Completed
       if (status === "Completed") {
-        await axios.post(`${config.baseURL}/api/orders/updatePaymentMode/${orderId}`, {
+        await api.post(`api/orders/updatePaymentMode/${orderId}`, {
           paymentMode: method,
         });
       }

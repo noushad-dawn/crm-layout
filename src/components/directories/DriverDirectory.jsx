@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from '../../api/axios';
 import React, { useEffect, useState } from 'react';
 import config from '../config';
 
@@ -7,7 +7,7 @@ const DriverDirectory = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios.get(`${config.baseURL}/api/drivers`);
+      const response = await api.get(`api/drivers`);
       setDrivers(response.data);
     };
 

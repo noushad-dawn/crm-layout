@@ -23,7 +23,7 @@ const DateFilterTable = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${config.baseURL}/api/orders`); // Replace with your backend API endpoint
+        const response = await fetch(`api/orders`); // Replace with your backend API endpoint
         const data = await response.json();
         setSampleData(data); // Store the fetched data
       } catch (error) {

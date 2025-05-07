@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
-import axios from "axios";
+import api from '../../api/axios';
 import config from "../config";
 
 const CurrentStatus = () => {
@@ -41,7 +41,7 @@ const CurrentStatus = () => {
 
   const fetchNotes = async (orderId) => {
     try {
-      const response = await axios.get(`${config.baseURL}/api/note/${orderId}`);
+      const response = await api.get(`api/note/${orderId}`);
       setNotes(response.data); // Ensure the data is an array
     } catch (error) {
       console.error("Error fetching notes", error);
@@ -51,8 +51,8 @@ const CurrentStatus = () => {
   const addNote = async (selectedOrder) => {
     if (!newNote) return; // Don't submit if the newNote is empty
     try {
-      const response = await axios.post(
-        `${config.baseURL}/api/note/add/${selectedOrder}`,
+      const response = await api.post(
+        `api/note/add/${selectedOrder}`,
         {
           content: newNote,
           userID: userID,
@@ -71,7 +71,7 @@ const CurrentStatus = () => {
 
   const deleteNote = async (noteId) => {
     try {
-      await axios.delete(`/api/note/delete/${noteId}`);
+      await api.delete(`/api/note/delete/${noteId}`);
       setNotes(notes.filter((note) => note._id !== noteId)); // Remove deleted note from state
     } catch (error) {
       console.error("Error deleting note", error);
@@ -101,8 +101,8 @@ const CurrentStatus = () => {
 
   const detachPrevUser = async () => {
     try {
-       await axios.post(
-        `${config.baseURL}/api/userDirectories/detachOrder`,
+       await api.post(
+        `api/userDirectories/detachOrder`,
         {
           orderId: selectedOrder.orderId,
           userID: selectedOrder.userID,
@@ -114,8 +114,8 @@ const CurrentStatus = () => {
   };
   const assignNewUser = async () => {
     try {
-       await axios.post(
-        `${config.baseURL}/api/userDirectories/assignOrder`,
+       await api.post(
+        `api/userDirectories/assignOrder`,
         {
           orderId: selectedOrder.orderId,
           userID: selectedUser,
@@ -129,8 +129,8 @@ const CurrentStatus = () => {
 
   // const fetchCrateOrders = async () => {
   //   try {
-  //     const response = await axios.get(
-  //       `${config.baseURL}/api/crates/all-orders`
+  //     const response = await api.get(
+  //       `api/crates/all-orders`
   //     );
   //     setListOrders(response.data); // Store the list of crate orders in state
   //   } catch (error) {
@@ -145,7 +145,7 @@ const CurrentStatus = () => {
 
   const fetchCrates = async () => {
     try {
-      const response = await axios.get(`${config.baseURL}/api/crates`);
+      const response = await api.get(`api/crates`);
       setCrates(response.data.crates);
     } catch (error) {
       console.error("Error fetching crates:", error);
@@ -188,8 +188,8 @@ const CurrentStatus = () => {
 
   async function fetchData() {
     try {
-      const response = await axios.get(
-        `${config.baseURL}/api/processes/current-process`
+      const response = await api.get(
+        `api/processes/current-process`
       );
       setData(response.data);
       
@@ -200,7 +200,7 @@ const CurrentStatus = () => {
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get(`${config.baseURL}/api/users`);
+      const response = await api.get(`api/users`);
       setUsers(response.data.filter(user => user.role !== 'driver'));
     } catch (error) {
       console.log(error);
@@ -224,11 +224,11 @@ const CurrentStatus = () => {
 
   const processCompleted = async (orderId, delivery) => {
     try {
-      const response = await axios.patch(
-        `${config.baseURL}/api/processes/process-completion/${orderId}`
+      const response = await api.patch(
+        `api/processes/process-completion/${orderId}`
       );
       if (delivery) {
-        await axios.patch(`${config.baseURL}/api/orders/orderId/${orderId}`, {
+        await api.patch(`api/orders/orderId/${orderId}`, {
           status: "Ready to be Delivered",
         });
       }
@@ -249,8 +249,8 @@ const CurrentStatus = () => {
 
   const assignCrate = async () => {
     try {
-      const response = await axios.patch(
-        `${config.baseURL}/api/crates/assign-crate/${selectedOrder.order.orderId}`,
+      const response = await api.patch(
+        `api/crates/assign-crate/${selectedOrder.order.orderId}`,
         {
           crateId: selectedCrate,
         }
@@ -279,7 +279,7 @@ const CurrentStatus = () => {
     
     
     try {
-      const response = await axios.post(`${config.baseURL}/api/iron-unit`, {
+      const response = await api.post(`api/iron-unit`, {
           userID:selectedUser,
           orderId: selectedOrder._id,
           units:unit
@@ -297,8 +297,8 @@ const CurrentStatus = () => {
     try {
 
       // Fetch the current process and process details
-      const response = await axios.get(
-        `${config.baseURL}/api/processes/order-process/${selectedOrder.orderId}`
+      const response = await api.get(
+        `api/processes/order-process/${selectedOrder.orderId}`
       );
       const data = response.data;
       currentProcess = data.currentProcess;
@@ -322,8 +322,8 @@ const CurrentStatus = () => {
 
     try {
       // Save the updated process details
-      const response = await axios.put(
-        `${config.baseURL}/api/processes/order-process/${selectedOrder.orderId}`,
+      const response = await api.put(
+        `api/processes/order-process/${selectedOrder.orderId}`,
         {
           currentProcess: selectedProcess,
           userId: selectedUser,
@@ -363,8 +363,8 @@ const CurrentStatus = () => {
     // const user = users.find((user) => user.userID === selectedUser);
     // fetchNotes(selectedOrder._id);
 
-    const licenseNumber = process.env.REACT_APP_WHATSAPP_LICENSE_NUMBER;
-    const apiKey = process.env.REACT_APP_WHATSAPP_API_KEY;
+    const licenseNumber = import.meta.env.VITE_WHATSAPP_LICENSE_NUMBER;
+    const apiKey = import.meta.env.VITE_WHATSAPP_API_KEY;
     const template = "process_update";
     const contact = user.phoneNumber;
     const name = user.name;
@@ -388,7 +388,7 @@ const CurrentStatus = () => {
     )},${encodeURIComponent(note)}&Name=${encodeURIComponent(name)}`;
 
 
-    axios
+    api
       .get(url)
       .then((response) => {
         console.log("Notification sent:", response.data);

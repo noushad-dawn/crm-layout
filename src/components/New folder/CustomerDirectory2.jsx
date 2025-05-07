@@ -1,8 +1,8 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import config from '../config';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import api from '../../api/api';
 
 const CustomerDirectory = () => {
   const [customers, setCustomers] = useState([]);
@@ -17,7 +17,7 @@ const CustomerDirectory = () => {
 
   const fetchCustomerData = async () => {
     try {
-      let url = `${config.baseURL}/api/customers`;
+      let url = `api/customers`;
       const params = new URLSearchParams();
       
       if (searchTerm) params.append('search', searchTerm);
@@ -26,7 +26,7 @@ const CustomerDirectory = () => {
       
       if (params.toString()) url += `?${params.toString()}`;
 
-      const response = await axios.get(url);
+      const response = await api.get(url);
       setCustomers(response.data.customers || []);
       setDetails(response.data.orders || []);
     } catch (error) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import config from '../config';
 
 const UserOrderDirectory = () => {
@@ -17,14 +17,14 @@ const UserOrderDirectory = () => {
 
   const fetchNotes = async (orderId) => {
     try {
-      const response = await axios.get(`${config.baseURL}/api/note/${orderId}`);
+      const response = await api.get(`api/note/${orderId}`);
       setNotes(Array.isArray(response.data) ? response.data : []); // Ensure the data is an array
     } catch (error) {
       console.error("Error fetching notes", error);
     }
   };
   useEffect(() => {
-    axios.get(`${config.baseURL}/api/users`)
+    api.get(`api/users`)
       .then(res => setUsers(res.data.filter(user=>user.role!=='driver')))
       .catch(err => console.error(err));
   }, []);
@@ -32,7 +32,7 @@ const UserOrderDirectory = () => {
   // Fetch user orders when a user is selected
   useEffect(() => {
     if (selectedUser) {
-      axios.get(`${config.baseURL}/api/userDirectories/userHistory/${selectedUser}`)
+      api.get(`api/userDirectories/userHistory/${selectedUser}`)
         .then(res => setOrders(res.data))
         .catch(err => console.error(err));
     }

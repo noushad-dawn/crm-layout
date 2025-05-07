@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import config from './config';
 
 const InventoryTable = () => {
@@ -13,7 +13,7 @@ const InventoryTable = () => {
   
   const fetchOrders = async () => {
     try {
-      const response = await axios.get(`${config.baseURL}/api/orders`);
+      const response = await api.get(`api/orders`);
       const data = response.data || [];
       const filteredData = data.filter((item)=>{
         item.status !== 'On route'&&
@@ -29,7 +29,7 @@ const InventoryTable = () => {
   // Lock an order
   const lockOrder = async (orderId) => {
     try {
-      const response = await axios.patch(`${config.baseURL}/api/orders/lock-order/${orderId}`);
+      const response = await api.patch(`api/orders/lock-order/${orderId}`);
       alert(response.data.message);
       fetchOrders();
     } catch (error) {

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { NavLink, useLocation, useNavigate   } from "react-router-dom";
 import {
   FiHome,
   FiTruck,
@@ -18,6 +18,15 @@ import { GiWashingMachine } from "react-icons/gi";
 const SideNavbar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [activeSubmenu, setActiveSubmenu] = useState(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if the current path is the root or dashboard
+    if (location.pathname === "/") {
+      navigate("/dashboard");
+    }
+  }, [location.pathname]);
 
   const toggleSubmenu = (menu) => {
     setActiveSubmenu(activeSubmenu === menu ? null : menu);
@@ -128,6 +137,7 @@ const SideNavbar = () => {
               {!item.submenu ? (
                 <NavLink
                   to={item.path}
+                  end
                   className={({ isActive }) =>
                     `flex items-center p-3 rounded-lg transition-all duration-200 ${
                       isActive
@@ -146,7 +156,8 @@ const SideNavbar = () => {
                   <button
                     onClick={() => toggleSubmenu(item.name)}
                     className={`flex items-center justify-between w-full p-3 rounded-lg transition-all duration-200 ${
-                      activeSubmenu === item.name
+                      activeSubmenu === item.name || 
+                      item.submenu.some(subItem => location.pathname === subItem.path)
                         ? "bg-blue-50 text-blue-600"
                         : "text-gray-600 hover:bg-gray-50 hover:text-gray-800"
                     }`}

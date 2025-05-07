@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from 'api';
 import React, { useState, useEffect } from 'react';
 import config from '../config';
 
@@ -19,7 +19,7 @@ const DateFilterTable = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios(`${config.baseURL}/api/orders`); // Replace with your actual API URL
+        const response = await api(`api/orders`); // Replace with your actual API URL
         setData(response.data); // Store the data from backend
       } catch (error) {
         console.error('Error fetching data:', error);

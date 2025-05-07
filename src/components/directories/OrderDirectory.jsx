@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
+
 import config from '../config';
 
 
@@ -10,7 +11,7 @@ const OrderDirectory = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await axios.get(`${config.baseURL}/api/orders`);
+                const response = await api.get(`api/orders`);
                 setOrders(response.data);
             } catch (error) {
                 console.error(error);

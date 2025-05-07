@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import config from "./config";
 
+
+
 const OrderTable = () => {
     const [orders, setOrders] = useState([]); // All orders (unchanged by filter)
     const [filteredOrders, setFilteredOrders] = useState([]); // Orders after filtering
@@ -16,7 +18,7 @@ const OrderTable = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await fetch(`${config.baseURL}/api/orders`);
+                const response = await fetch(`api/orders`);
                 if (!response.ok) throw new Error("Network error");
                 const data = await response.json();
                 setOrders(data);

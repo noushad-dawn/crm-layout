@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { FiMail, FiLock, FiPhone, FiEye, FiEyeOff } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
 const ClientLogin = () => {
   const [emailOrPhone, setEmailOrPhone] = useState('');
@@ -10,6 +12,40 @@ const ClientLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formValid, setFormValid] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
+  const navigate = useNavigate();
+
+  // Check for valid token on component mount
+  useEffect(() => {
+    const checkToken = () => {
+      const token = localStorage.getItem('token');
+      const clientValidated = localStorage.getItem('clientValidated') === 'true';
+      
+      if (!token || !clientValidated) {
+        setCheckingSession(false);
+        return;
+      }
+      
+      try {
+        const decoded = jwtDecode(token);
+        const currentTime = Math.floor(Date.now() / 1000);
+        if (decoded.exp > currentTime) {
+          navigate('/login');
+        } else {
+          // Clear invalid token
+          localStorage.removeItem('token');
+          localStorage.removeItem('clientValidated');
+          setCheckingSession(false);
+        }
+      } catch {
+        localStorage.removeItem('token');
+        localStorage.removeItem('clientValidated');
+        setCheckingSession(false);
+      }
+    };
+
+    checkToken();
+  }, [navigate]);
 
   // Validate form on input change
   useEffect(() => {
@@ -28,15 +64,15 @@ const ClientLogin = () => {
       return false;
     }
     
-    // Basic email validation
+    // Email validation
     if (emailOrPhone.includes('@') && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailOrPhone)) {
       setError('Please enter a valid email address');
       return false;
     }
     
-    // Basic phone validation (adjust regex as needed)
+    // Phone validation (minimum 10 digits)
     if (!emailOrPhone.includes('@') && !/^[\d\s+-]{10,}$/.test(emailOrPhone)) {
-      setError('Please enter a valid phone number');
+      setError('Please enter a valid phone number (at least 10 digits)');
       return false;
     }
     
@@ -57,7 +93,7 @@ const ClientLogin = () => {
     setIsLoading(true);
     
     try {
-      const res = await axios.post('https://your-backend-url.com/api/login', {
+      const res = await axios.post('http://localhost:8005/api/auth/login', {
         email: emailOrPhone.includes('@') ? emailOrPhone : undefined,
         phone: !emailOrPhone.includes('@') ? emailOrPhone : undefined,
         password,
@@ -65,23 +101,34 @@ const ClientLogin = () => {
       
       const { token, tenant } = res.data;
       
-      // Save token to localStorage
+      // Save authentication data
       localStorage.setItem('token', token);
       localStorage.setItem('tenant', JSON.stringify(tenant));
+      localStorage.setItem('clientValidated', 'true');
 
-      // Set token to axios default headers
+      // Set default auth header
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-      // Navigate to dashboard or show success
-      console.log('Login successful!', tenant);
+      navigate('/login');
       
     } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Login failed. Please try again.';
+      const errorMessage = err.response?.data?.message || 'Login failed. Please check your credentials and try again.';
       setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
+
+  if (checkingSession) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="text-center p-8 bg-white rounded-xl shadow-md">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-4 text-gray-700">Checking your session...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
@@ -92,8 +139,8 @@ const ClientLogin = () => {
         className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md"
       >
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">Welcome Back</h2>
-          <p className="text-gray-600">Sign in to your account</p>
+          <h2 className="text-3xl font-bold text-gray-800 mb-2">Client Portal</h2>
+          <p className="text-gray-600">Sign in to continue</p>
         </div>
 
         {error && (
@@ -124,7 +171,9 @@ const ClientLogin = () => {
               </div>
               <input
                 id="emailOrPhone"
+                name="emailOrPhone"
                 type="text"
+                autoComplete="username"
                 placeholder="Enter email or phone"
                 value={emailOrPhone}
                 onChange={(e) => setEmailOrPhone(e.target.value)}
@@ -143,7 +192,9 @@ const ClientLogin = () => {
               </div>
               <input
                 id="password"
+                name="password"
                 type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
                 placeholder="Enter password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -167,6 +218,7 @@ const ClientLogin = () => {
             <div className="flex items-center">
               <input
                 id="remember-me"
+                name="remember-me"
                 type="checkbox"
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
@@ -203,7 +255,7 @@ const ClientLogin = () => {
           <p className="text-sm text-gray-600">
             Don't have an account?{' '}
             <a href="/register" className="text-blue-600 hover:text-blue-500 font-medium">
-              Sign up
+              Contact support
             </a>
           </p>
         </div>

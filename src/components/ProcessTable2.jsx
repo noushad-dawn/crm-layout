@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import config from './config';
 
 const  ProcessTable = () => {
@@ -12,7 +12,7 @@ const  ProcessTable = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${config.baseURL}/api/orders/process/Pending`); // Fetch only 'Pending' orders
+      const response = await api.get(`api/orders/process/Pending`); // Fetch only 'Pending' orders
       setFilteredData(response.data || []);
     } catch (error) {
       setError('No pending orders found');

@@ -1,105 +1,5 @@
-// import React, { useState, useEffect } from 'react';
-// import axios from 'axios';
-// import config from '../config';
-
-// const DriverTrackingPage = () => {
-//   const [drivers, setDrivers] = useState([]); // Drivers data from the backend
-//   const [searchTerm, setSearchTerm] = useState('');
-//   const [expandedDriverId, setExpandedDriverId] = useState(null);
-
-//   useEffect(() => {
-//     axios.get(`${config.baseURL}/api/drivers/status`)
-//       .then(response => setDrivers(response.data))
-//       .catch(error => console.error('Error fetching drivers:', error));
-//   }, []);
-
-//   const handleSearch = () => {
-//     return drivers.filter(driver =>
-//       driver.driverId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-//       driver.driverName.toLowerCase().includes(searchTerm.toLowerCase())
-//     );
-//   };
-
-//   const filteredDrivers = handleSearch();
-
-//   const toggleExpand = (driverId) => {
-//     setExpandedDriverId(expandedDriverId === driverId ? null : driverId);
-//   };
-
-//   return (
-//     <div className="w-full p-6 bg-gray-100 mt-8">
-//       <h1 className="text-2xl font-semibold mb-4">Driver Tracking</h1>
-
-//       <div className="mb-4">
-//         <input
-//           type="text"
-//           placeholder="Search by Driver ID"
-//           value={searchTerm}
-//           onChange={(e) => setSearchTerm(e.target.value)}
-//           className="border rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
-//         />
-//       </div>
-
-//       <table className="min-w-full bg-white rounded-lg shadow overflow-hidden border border-gray-300">
-//         <thead className="bg-gray-200">
-//           <tr>
-//             <th className="border px-4 py-2 text-left text-gray-600">Driver ID</th>
-//             <th className="border px-4 py-2 text-left text-gray-600">Driver Name</th>
-//             <th className="border px-4 py-2 text-left text-gray-600">Orders Delivered</th>
-//             <th className="border px-4 py-2 text-left text-gray-600">Products</th>
-//             <th className="border px-4 py-2 text-left text-gray-600">Last Known Location</th>
-//             <th className="border px-4 py-2 text-left text-gray-600">More Details</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           {filteredDrivers.length > 0 ? (
-//             filteredDrivers.map((driver) => (
-//               <React.Fragment key={driver.driverId}>
-//                 <tr>
-//                   <td className="border px-4 py-2">{driver.driverId}</td>
-//                   <td className="border px-4 py-2">{driver.driverName}</td>
-//                   <td className="border px-4 py-2">{driver.id.dateOfDelivery}</td>
-//                   <td className="border px-4 py-2">{driver.id.products.join(', ')}</td>
-//                   <td className="border px-4 py-2">{driver.location}</td>
-//                   <td className="border px-4 py-2"><button 
-//                    onClick={() => toggleExpand(driver.driverId)}
-//                    className='px-4 py-2 rounded text-white bg-green-500 hover:bg-green-600'
-//                   >
-//                     Check
-//                     </button></td>
-//                 </tr>
-//                 {expandedDriverId === driver.driverId && (
-//                   <tr>
-//                     <td colSpan="5" className="border px-4 py-2">
-//                       <div className="bg-gray-50 p-4 rounded-lg">
-//                         <h3 className="font-semibold">Order Details:</h3>
-//                         <p>{`Customer Name: ${driver.name}`}</p>
-//                         <p>{`Customer Name: ${driver.orderId}`}</p>
-//                         <p>{`Total Price: ${driver.id.totalPrice.toFixed(2)}`}</p>
-//                         <p>{`Payment Status: ${driver.id.paymentStatus}`}</p>
-//                         <p>{`Order Status: ${driver.id.status}`}</p>
-//                       </div>
-//                     </td>
-//                   </tr>
-//                 )}
-//               </React.Fragment>
-//             ))
-//           ) : (
-//             <tr>
-//               <td colSpan="5" className="border px-4 py-2 text-center text-gray-500">No drivers found</td>
-//             </tr>
-//           )}
-//         </tbody>
-//       </table>
-//     </div>
-//   );
-// };
-
-// export default DriverTrackingPage;
-
-
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import config from '../config';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
@@ -117,8 +17,8 @@ const DriverTrackingPage = () => {
   }, [searchTerm]);
 
   const fetchDrivers = () => {
-    axios
-      .get(`${config.baseURL}/api/drivers/status`, {
+    api
+      .get(`api/drivers/status`, {
         params: { search: searchTerm }
       })
       .then(response => {

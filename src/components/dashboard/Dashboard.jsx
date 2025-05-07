@@ -9,10 +9,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import config from '../config';
-// import 'tailwindcss/tailwind.css';
-
-// Register required Chart.js components
+import api from '../../api/axios';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Dashboard = () => {
@@ -23,10 +20,9 @@ const Dashboard = () => {
   const [filter, setFilter] = useState('7days');
 
   useEffect(() => {
-    // Fetch orders data
-    fetch(`${config.baseURL}/api/orders`)
-      .then((res) => res.json())
-      .then((data) => {
+    api.get('api/orders')
+      .then((res) => {
+        const data = res.data;
         setOrders(data);
         setFilteredOrders(data); // Default data
         updateChart(data, '7days'); // Initial filter

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from '../../api/axios';
+
+
 import config from "../config";
 
 const TatTable = () => {
@@ -28,8 +30,8 @@ const TatTable = () => {
       if (filters.deliveryStatus)
         params.append("deliveryStatus", filters.deliveryStatus);
 
-      const response = await axios.get(
-        `${config.baseURL}/api/orders/tat?${params.toString()}`
+      const response = await api.get(
+        `api/orders/tat?${params.toString()}`
       );
       setOrders(response.data);
       setVisibleOrders(response.data.slice(0, itemsPerPage));
@@ -88,12 +90,12 @@ const TatTable = () => {
     if (confirmAction) {
       try {
         if (delivery) {
-          await axios.patch(`${config.baseURL}/api/orders/orderId/${orderId}`, {
+          await api.patch(`api/orders/orderId/${orderId}`, {
             status: "Delivered",
           });
         }
-        await axios.post(
-          `${config.baseURL}/api/orders/updatePaymentStatus/${orderId}`,
+        await api.post(
+          `api/orders/updatePaymentStatus/${orderId}`,
           { paymentStatus: "Completed" }
         );
 

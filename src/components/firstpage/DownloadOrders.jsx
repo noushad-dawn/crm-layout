@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
-import axios from 'axios';
+import api from '../../api/axios';
 import config from '../config';
 
 const DownloadOrders = () => {
@@ -20,7 +20,7 @@ const DownloadOrders = () => {
     // Fetch orders from backend and filter them based on date range
     const fetchOrders = async () => {
         try {
-            const response = await axios.get(`${config.baseURL}/api/orders`);
+            const response = await api.get(`api/orders`);
             const allOrders = response.data;
 
             // Filter orders between selected dates

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from '../../api/axios';
+
 import config from "../config";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 const InventoryManagement = () => {
   const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);u
   const [showCrateModal, setShowCrateModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [crates, setCrates] = useState([]);
@@ -24,8 +25,8 @@ const InventoryManagement = () => {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${config.baseURL}/api/processes/current-process`
+      const response = await api.get(
+        `api/processes/current-process`
       );
       setData(response.data);
       const filtered = filterOrders(response.data, search); // Filter orders based on search
@@ -76,7 +77,7 @@ const InventoryManagement = () => {
 
   const fetchCrates = async () => {
     try {
-      const response = await axios.get(`${config.baseURL}/api/crates`);
+      const response = await api.get(`api/crates`);
       setCrates(response.data.crates);
     } catch (error) {
       console.error("Error fetching crates:", error);
@@ -99,8 +100,8 @@ const InventoryManagement = () => {
 
   const assignCrate = async () => {
     try {
-      const response = await axios.patch(
-        `${config.baseURL}/api/crates/assign-crate/${selectedOrder.order.orderId}`,
+      const response = await api.patch(
+        `api/crates/assign-crate/${selectedOrder.order.orderId}`,
         {
           crateId: selectedCrate,
         }

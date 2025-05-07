@@ -1,6 +1,6 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import config from '../config';
+import api from '../../api/axios';
 const CustomerDirectory = () => {
   const [customers, setCustomers] = useState([]);
 
@@ -10,7 +10,7 @@ const CustomerDirectory = () => {
 
   const fetchCustomerData = async () => {
   try {
-    const response = await axios.get(`${config.baseURL}/api/customers`);
+    const response = await api.get(`api/customers`);
     setCustomers(response.data || []);
   } catch (error) {
     console.log(error);

@@ -5,7 +5,7 @@
 //noushad.......
 
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // Make sure to install axios if you haven't
+import api from 'api'; // Make sure to install api if you haven't
 import config from '../config';
 
 const ProcessTable = () => {
@@ -56,7 +56,7 @@ const ProcessTable = () => {
   
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${config.baseURL}/api/orders/process/Pending`); // Update URL to your endpoint
+      const response = await api.get(`api/orders/process/Pending`); // Update URL to your endpoint
       setFilteredData(response.data||[]);
     } catch (error) {
       setError('No orders found for this status');
@@ -69,7 +69,7 @@ const ProcessTable = () => {
       return ;
     }
     try {
-      await axios.patch(`${config.baseURL}/api/orders/orderId/${orderId}`, {
+      await api.patch(`api/orders/orderId/${orderId}`, {
         status: 'Ready to be Delivered',
       });
       alert('Order Added to Ready to be Delivered');

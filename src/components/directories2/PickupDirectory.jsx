@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from '../../api/axios';
 import config from "../config";
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -17,8 +17,8 @@ const PickupDirectory = () => {
   const pageSize = 10; 
 
   const statuses = ["Ready to be picked", "On route", "Cancelled", "Picked"];
-  const licenseNumber = process.env.VITE_WHATSAPP_LICENSE_NUMBER;
-  const apiKey = process.env.VITE_WHATSAPP_API_KEY;
+  const licenseNumber = import.meta.env.VITE_WHATSAPP_LICENSE_NUMBER;
+  const apiKey = import.meta.env.VITE_WHATSAPP_API_KEY;
 
   useEffect(() => {
     // Fetch all pickups from the backend
@@ -54,8 +54,8 @@ const PickupDirectory = () => {
   }, [selectedDate, searchRoute, pickups]);
 
   const fetchPickup = () => {
-    axios
-      .get(`${config.baseURL}/api/pickups`)
+    api
+      .get(`api/pickups`)
       .then((response) => setPickups(response.data))
       .catch((err) => console.error("Failed to fetch pickups:", err));
   };
@@ -86,7 +86,7 @@ const PickupDirectory = () => {
     )}&Template=${encodeURIComponent(template)}&Param=${encodeURIComponent(
       name
     )}&Name=${encodeURIComponent(name)}`;
-    axios
+    api
       .get(url)
       .then((response) => {
         console.log("Response:", response.data);
@@ -105,7 +105,7 @@ const PickupDirectory = () => {
     )}&Template=${encodeURIComponent(template)}&Param=${encodeURIComponent(
       name
     )},${encodeURIComponent(time)}&Name=${encodeURIComponent(name)}`;
-    axios
+    api
       .get(url)
       .then((response) => {
         console.log("Response:", response.data);
@@ -122,8 +122,8 @@ const PickupDirectory = () => {
     const time = pickup.timeslot;
     const confirm = window.confirm("Do you want to change?");
     if (!confirm) return;
-    axios
-      .patch(`${config.baseURL}/api/pickups/status/${id}`, { newStatus })
+    api
+      .patch(`api/pickups/status/${id}`, { newStatus })
       .then((response) => {
         setConfirmationMessage("Status updated successfully!");
         if (newStatus === statuses[2]) {
@@ -155,7 +155,7 @@ const PickupDirectory = () => {
     )},${encodeURIComponent(pickup.location.replace(",", ";"))},${encodeURIComponent(
       contact
     )}&Name=${encodeURIComponent(name)}`;
-    axios
+    api
       .get(url)
       .then((response) => {
         console.log("Response:", response.data);
@@ -167,8 +167,8 @@ const PickupDirectory = () => {
 
   const handleSave = (pickup) => {
     const id = pickup._id;
-    axios
-      .patch(`${config.baseURL}/api/pickups/reschedule/${id}`, { newDate })
+    api
+      .patch(`api/pickups/reschedule/${id}`, { newDate })
       .then((response) => {
         setEditingDateId(null);
         sendRescheduleMessage(pickup);

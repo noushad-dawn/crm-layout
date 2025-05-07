@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from '../../api/axios';
 import Select, { components } from "react-select";
 import generateNewOrderId from "../RandomIdGeneratror";
 import config from "../config";
@@ -90,7 +90,7 @@ const OrderForm = () => {
     if (query.length < 2) return;
 
     try {
-      const response = await axios.get(`${config.baseURL}/api/orders/search`, {
+      const response = await api.get(`api/orders/search`, {
         params: { query, field },
       });
 
@@ -118,8 +118,8 @@ const OrderForm = () => {
 
   const saveCustomerDetails = async (orderId) => {
     try {
-      await axios.post(
-        `${config.baseURL}/api/customers/${orderId}`
+      await api.post(
+        `api/customers/${orderId}`
       );
       // console.log(response.data.message);
     } catch (error) {
@@ -129,8 +129,8 @@ const OrderForm = () => {
 
   const fetchLocations = async () => {
     try {
-      const response = await axios.get(
-        `${config.baseURL}/api/route-location/all-locations`
+      const response = await api.get(
+        `api/route-location/all-locations`
       );
       setLocations(response.data); // Ensure `response.data` matches your API response structure
     } catch (error) {
@@ -161,8 +161,8 @@ const OrderForm = () => {
           timing: null,
         },
       };
-       await axios.post(
-        `${config.baseURL}/api/processes/order-process`,
+       await api.post(
+        `api/processes/order-process`,
         {
           orderId: orderId,
           currentProcess: "process0",
@@ -178,7 +178,7 @@ const OrderForm = () => {
   // Fetch all categories from backend
   const fetchCategories = async () => {
     try {
-      const response = await axios.get(`${config.baseURL}/api/services/names`);
+      const response = await api.get(`api/services/names`);
       setCategories(response.data);
     } catch (err) {
       setError("Failed to fetch categories");
@@ -186,7 +186,7 @@ const OrderForm = () => {
   };
   const fetchGarments = async () => {
     try {
-      const response = await axios.get(`${config.baseURL}/api/garment/all`);
+      const response = await api.get(`api/garment/all`);
       setGarmentList(response.data);
     } catch (err) {
       setError("Failed to fetch Garments");
@@ -198,8 +198,8 @@ const OrderForm = () => {
     selectedProduct.productName = "";
     selectedProduct.units = "";
     try {
-      const response = await axios.get(
-        `${config.baseURL}/api/services/service_id/${categoryId}`
+      const response = await api.get(
+        `api/services/service_id/${categoryId}`
       );
       setProducts(response.data.products);
       setCategory({ categoryId: categoryId, categoryName: categoryName });
@@ -322,7 +322,7 @@ const OrderForm = () => {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${config.baseURL}/api/orders`);
+      const response = await api.get(`api/orders`);
       setOrders(response.data || []);
     } catch (err) {
       setError("Failed to fetch orders");
@@ -342,8 +342,8 @@ const OrderForm = () => {
     }
    console.log(totalQrUnits);
     try {
-      const response = await axios.post(
-        `${config.baseURL}/api/qr-process/add/units`,
+      const response = await api.post(
+        `api/qr-process/add/units`,
         {
           orderID: formData.orderId,
           units: totalQrUnits,
@@ -373,7 +373,7 @@ const OrderForm = () => {
     // formData.subUnits = selSubproQuantity;
 
     try {
-      await axios.post(`${config.baseURL}/api/orders`, formData);
+      await api.post(`api/orders`, formData);
 
       setFormData({
         orderId: "",

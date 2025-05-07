@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
+import api from '../../api/axios';
+
+
 import config from "../config";
 
 const CrateTable = () => {
@@ -17,10 +19,10 @@ const CrateTable = () => {
     try {
       let response;
       if (selectedCrate === "all") {
-        response = await axios.get(`${config.baseURL}/api/crates`);
+        response = await api.get(`api/crates`);
       } else {
-        response = await axios.get(
-          `${config.baseURL}/api/crates/crate/${selectedCrate}`
+        response = await api.get(
+          `api/crates/crate/${selectedCrate}`
         );
       }
       setCrateData(response.data.crates || [response.data.crate]);

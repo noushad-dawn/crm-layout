@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from '../../api/axios';
 import config from "../config";
 
 const processMapping = {
@@ -18,7 +18,7 @@ const ProductCount = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get(`${config.baseURL}/api/orders`);
+        const response = await api.get(`api/orders`);
         setOrders(response.data);
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -30,7 +30,7 @@ const ProductCount = () => {
   const handleSeeMore = async (orderId) => {
     setLoading(true);
     try {
-      const response = await axios.get(`${config.baseURL}/api/qr-process/${orderId}`);
+      const response = await api.get(`api/qr-process/${orderId}`);
       if (!response.data) {
         setSelectedOrder({ orderId, noProcesses: true });
       } else {

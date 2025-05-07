@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from '../../api/axios';
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import config from "../config";
@@ -24,7 +24,7 @@ const Receipt = () => {
 
   const fetchPrice = async () => {
     try {
-      const resp = await axios.get(`${config.baseURL}/api/services/`);
+      const resp = await api.get(`api/services/`);
       const categories = resp.data;
       const priceList = orderData.products.map((product, index) => {
         const category = categories.find(
@@ -47,10 +47,10 @@ const Receipt = () => {
 
   const sendPdftoWhatsapp = async (pdfUrl) => {
     try {
-      const licenseNumber = process.env.REACT_APP_WHATSAPP_LICENSE_NUMBER;
-      const apiKey = process.env.REACT_APP_WHATSAPP_API_KEY;
+      const licenseNumber = import.meta.env.VITE_WHATSAPP_LICENSE_NUMBER;
+      const apiKey = import.meta.env.VITE_WHATSAPP_API_KEY;
       const url = `https://app.chatbroadcast.net/api/sendtemplate.php?LicenseNumber=${encodeURIComponent(licenseNumber)}&APIKey=${encodeURIComponent(apiKey)}&Contact=${orderData.phoneNumber}&Template=invoicetest&Param=${orderData.name},${orderData.orderId}&Fileurl=${pdfUrl}&Name=${orderData.name}&PDFName=Receipt-${orderData.orderId}`;
-      const response = await axios.get(url);
+      const response = await api.get(url);
       console.log(url);
       console.log(response.data);
       alert("Invoice message send successfully!");
@@ -64,8 +64,8 @@ const Receipt = () => {
     try {
       const formDataPdf = new FormData();
       formDataPdf.append("pdf", pdfBlob, "receipt.pdf");
-      const response = await axios.post(
-        `${config.baseURL}/api/invoice/upload-pdf`,
+      const response = await api.post(
+        `api/invoice/upload-pdf`,
         formDataPdf,
         {
           headers: {
@@ -97,7 +97,7 @@ const Receipt = () => {
 
   const fetchPrinters = async () => {
     try {
-      const response = await axios.get(`${config.baseURL}/api/printers`);
+      const response = await api.get(`api/printers`);
       const data = response.data;
       setPrinters(data);
       setShowPrinters(true);
@@ -123,7 +123,7 @@ const Receipt = () => {
       return;
     }
 
-    const response = await axios.post(`${config.baseURL}/api/printers/print`, formData);
+    const response = await api.post(`api/printers/print`, formData);
     const data = response.data;
     alert(data.success ? "Print job sent!" : `Error: ${data.error}`);
   };

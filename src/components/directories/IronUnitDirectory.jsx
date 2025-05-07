@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from '../../api/axios';
+
 import config from "../config";
 
 const IronUnitDetails = () => {
@@ -13,7 +14,7 @@ const IronUnitDetails = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`${config.baseURL}/api/users`);
+        const response = await api.get(`api/users`);
         setUsers(response.data);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -32,7 +33,7 @@ const IronUnitDetails = () => {
 
     setLoading(true);
     try {
-      const response = await axios.get(`${config.baseURL}/api/iron-unit/${userID}`);
+      const response = await api.get(`api/iron-unit/${userID}`);
       setIronUnitDetails(response.data.ironUnit);
     } catch (error) {
       setIronUnitDetails(null);  // Ensure it's null if there's an error

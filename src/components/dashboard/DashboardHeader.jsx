@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import config from '../config';
+import api from '../../api/axios';
 // import 'tailwindcss/tailwind.css';
 
 const DashboardHeader = () => {
@@ -15,8 +15,8 @@ const DashboardHeader = () => {
     // Fetch orders data for the current month
     const fetchOrders = async () => {
       try {
-        const res = await fetch(`${config.baseURL}/api/orders`);
-        const data = await res.json();
+        const res = await api.get('api/orders');
+        const data = res.data;
 
         // Filter orders for the current month
         const currentMonth = new Date().getMonth();

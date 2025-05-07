@@ -22,7 +22,7 @@
 //     setLoading(true);
 //     try {
 //       const response = await axios.get(
-//         `${config.baseURL}/api/processes/current-process`
+//         `api/processes/current-process`
 //       );
 //       setData(response.data);
 //     } catch (error) {
@@ -35,7 +35,7 @@
 //   // const fetchCrateOrders = async () => {
 //   //   try {
 //   //     const response = await axios.get(
-//   //       `${config.baseURL}/api/crates/all-orders`
+//   //       `api/crates/all-orders`
 //   //     );
 //   //     setListOrders(response.data); // Store the list of crate orders in state
 //   //   } catch (error) {
@@ -50,7 +50,7 @@
 
 //   const fetchCrates = async () => {
 //     try {
-//       const response = await axios.get(`${config.baseURL}/api/crates`);
+//       const response = await axios.get(`api/crates`);
 //       setCrates(response.data.crates);
 //     } catch (error) {
 //       console.error("Error fetching crates:", error);
@@ -70,7 +70,7 @@
 //   const assignCrate = async () => {
 //     try {
 //       const response = await axios.patch(
-//         `${config.baseURL}/api/crates/assign-crate/${selectedOrder.order.orderId}`,
+//         `api/crates/assign-crate/${selectedOrder.order.orderId}`,
 //         {
 //           crateId: selectedCrate,
 //         }
@@ -326,7 +326,7 @@ const InventoryManagement = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${config.baseURL}/api/processes/current-process?search=${search}`
+        `api/processes/current-process?search=${search}`
       );
       setData(response.data);
     } catch (error) {
@@ -339,7 +339,7 @@ const InventoryManagement = () => {
   // const fetchCrateOrders = async () => {
   //   try {
   //     const response = await axios.get(
-  //       `${config.baseURL}/api/crates/all-orders`
+  //       `api/crates/all-orders`
   //     );
   //     setListOrders(response.data); // Store the list of crate orders in state
   //   } catch (error) {
@@ -354,7 +354,7 @@ const InventoryManagement = () => {
 
   const fetchCrates = async () => {
     try {
-      const response = await axios.get(`${config.baseURL}/api/crates`);
+      const response = await axios.get(`api/crates`);
       setCrates(response.data.crates);
     } catch (error) {
       console.error("Error fetching crates:", error);
@@ -374,7 +374,7 @@ const InventoryManagement = () => {
   const assignCrate = async () => {
     try {
       const response = await axios.patch(
-        `${config.baseURL}/api/crates/assign-crate/${selectedOrder.order.orderId}`,
+        `api/crates/assign-crate/${selectedOrder.order.orderId}`,
         {
           crateId: selectedCrate,
         }

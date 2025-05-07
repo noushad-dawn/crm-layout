@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from '../../api/axios';
 import config from "../config";
 
 const PickupForm = () => {
@@ -19,8 +19,8 @@ const PickupForm = () => {
 
   const fetchRoutes = async () => {
     try {
-      const response = await axios.get(
-        `${config.baseURL}/api/route-location/routes`
+      const response = await api.get(
+        `api/route-location/routes`
       );
       // console.log(response.data);
       setRoutesData(response.data || []);
@@ -31,14 +31,14 @@ const PickupForm = () => {
   };
 
   const sendPickUpMessage = () => {
-        const licenseNumber = process.env.REACT_APP_WHATSAPP_LICENSE_NUMBER;
-        const apiKey = process.env.REACT_APP_WHATSAPP_API_KEY;
+        const licenseNumber = import.meta.env.VITE_WHATSAPP_LICENSE_NUMBER;
+        const apiKey = import.meta.env.VITE_WHATSAPP_API_KEY;
         const driver = drivers.find(driver=>driver._id ===formData.driverId);
         const contact = driver.phoneNumber.trim(); 
         const template = 'pickup_details';
         const name = driver.name.trim();
         const url = `https://app.chatbroadcast.net/api/sendtemplate.php?LicenseNumber=${encodeURIComponent(licenseNumber)}&APIKey=${encodeURIComponent(apiKey)}&Contact=${encodeURIComponent(contact)}&Template=${encodeURIComponent(template)}&Param=${encodeURIComponent(driver?.name)},${encodeURIComponent(formData.customerName)},${encodeURIComponent(formData.phoneNumber)},${encodeURIComponent(formData.address.replaceAll(",", ";").trim())},${encodeURIComponent(formData.location.replaceAll(",", ";").trim())},${encodeURIComponent(formData.route)}&Name=${encodeURIComponent(name)}`;
-        axios
+        api
           .get(url)
           .then((response) => {
             console.log('Response:', response.data);
@@ -62,7 +62,7 @@ const PickupForm = () => {
   useEffect(() => {
     const fetchDrivers = async () => {
       try {
-        const response = await axios.get(`${config.baseURL}/api/drivers`);
+        const response = await api.get(`api/drivers`);
         setDrivers(response.data);
       } catch (error) {
         console.error("Failed to fetch drivers:", error);
@@ -74,7 +74,7 @@ const PickupForm = () => {
   // Fetch pickups
   const fetchPickups = async () => {
     try {
-      const response = await axios.get(`${config.baseURL}/api/pickups`);
+      const response = await api.get(`api/pickups`);
       setPickups(response.data);
     } catch (error) {
       console.error("Failed to fetch pickups:", error);
@@ -107,8 +107,8 @@ const PickupForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        `${config.baseURL}/api/pickups`,
+      const response = await api.post(
+        `api/pickups`,
         formData
       );
       alert("Pickup submitted successfully!");

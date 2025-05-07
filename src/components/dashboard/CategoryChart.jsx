@@ -1,14 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Pie } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
-  Title,
-} from 'chart.js';
-// import 'tailwindcss/tailwind.css';
-import config from '../config';
+import React, { useState, useEffect } from "react";
+import { Pie } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from "chart.js";
+import api from "../../api/axios";
 
 // Registering necessary components for Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend, Title);
@@ -18,30 +11,34 @@ const CategoryChart = () => {
   const [categories, setCategories] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [chartData, setChartData] = useState({});
-  const [dateRange, setDateRange] = useState({ from: '', to: '' });
-  const [filter, setFilter] = useState('7days'); // Default filter
+  const [dateRange, setDateRange] = useState({ from: "", to: "" });
+  const [filter, setFilter] = useState("7days"); // Default filter
   const [categoryCounts, setCategoryCounts] = useState({}); // Store category counts
   const [categoryColors, setCategoryColors] = useState([]); // Store category colors
 
   useEffect(() => {
     // Fetch orders data
-    fetch(`${config.baseURL}/api/orders`)
-      .then((res) => res.json())
-      .then((data) => {
+    api
+      .get("api/orders")
+      .then((res) => {
+        const data = res.data;
         setOrders(data);
         setFilteredOrders(data); // Set the initial filtered orders
-        updateChart(data, '7days'); // Apply the '7days' filter on initial load
+        updateChart(data, "7days"); // Apply the '7days' filter on initial load
       })
-      .catch((err) => console.error('Error fetching orders:', err));
+      .catch((err) => console.error("Error fetching orders:", err));
 
     // Fetch categories
-    fetch(`${config.baseURL}/api/services/names`)
-      .then((res) => res.json())
-      .then((data) => {
+    api
+      .get("api/services/names")
+      .then((res) => {
+        const data = res.data;
         setCategories(data);
       })
-      .catch((err) => console.error('Error fetching categories:', err));
-  }, []); // Empty dependency array ensures this runs once on component mount
+      .catch((err) => {console.error("Error fetching categories:", err) 
+        setCategories([]);
+      });
+  }, []);
 
   // Aggregate the orders by category and count occurrences
   const aggregateCategories = (data) => {
@@ -71,17 +68,25 @@ const CategoryChart = () => {
     lastYear.setFullYear(today.getFullYear() - 1);
 
     // Filter orders based on the selected range
-    if (range === '7days') {
-      filtered = data.filter((order) => new Date(order.dateOfOrder) >= last7Days);
-    } else if (range === '1month') {
-      filtered = data.filter((order) => new Date(order.dateOfOrder) >= lastMonth);
-    } else if (range === '1year') {
-      filtered = data.filter((order) => new Date(order.dateOfOrder) >= lastYear);
-    } else if (range === 'custom') {
+    if (range === "7days") {
+      filtered = data.filter(
+        (order) => new Date(order.dateOfOrder) >= last7Days
+      );
+    } else if (range === "1month") {
+      filtered = data.filter(
+        (order) => new Date(order.dateOfOrder) >= lastMonth
+      );
+    } else if (range === "1year") {
+      filtered = data.filter(
+        (order) => new Date(order.dateOfOrder) >= lastYear
+      );
+    } else if (range === "custom") {
       const from = new Date(dateRange.from);
       const to = new Date(dateRange.to);
       filtered = data.filter(
-        (order) => new Date(order.dateOfOrder) >= from && new Date(order.dateOfOrder) <= to
+        (order) =>
+          new Date(order.dateOfOrder) >= from &&
+          new Date(order.dateOfOrder) <= to
       );
     }
 
@@ -91,13 +96,28 @@ const CategoryChart = () => {
     const aggregatedData = aggregateCategories(filtered);
     setCategoryCounts(aggregatedData);
 
-    const labels = categories.length ? categories.map((cat) => cat.serviceName) : Object.keys(aggregatedData); // Ensure labels are taken from categories or aggregated data keys
+    const labels = categories.length
+      ? categories.map((cat) => cat.serviceName)
+      : Object.keys(aggregatedData); // Ensure labels are taken from categories or aggregated data keys
     const dataPoints = labels.map((category) => aggregatedData[category] || 0); // Ensure data points are mapped correctly
 
     // Set chart colors for each category
     const chartColors = [
-      '#FF6384', '#36A2EB', '#FFCE56', '#FF5733', '#8E44AD', '#2ECC71', '#E74C3C',
-      '#F39C12', '#1ABC9C', '#9B59B6', '#34495E', '#D35400', '#16A085', '#F1C40F', '#C0392B',
+      "#FF6384",
+      "#36A2EB",
+      "#FFCE56",
+      "#FF5733",
+      "#8E44AD",
+      "#2ECC71",
+      "#E74C3C",
+      "#F39C12",
+      "#1ABC9C",
+      "#9B59B6",
+      "#34495E",
+      "#D35400",
+      "#16A085",
+      "#F1C40F",
+      "#C0392B",
     ];
 
     setCategoryColors(chartColors.slice(0, labels.length)); // Map colors to the number of categories
@@ -126,7 +146,7 @@ const CategoryChart = () => {
 
   const applyCustomDateFilter = () => {
     if (dateRange.from && dateRange.to) {
-      updateChart(orders, 'custom');
+      updateChart(orders, "custom");
     } else {
       alert('Please select both "From" and "To" dates.');
     }
@@ -140,7 +160,9 @@ const CategoryChart = () => {
 
   return (
     <div className="p-8 bg-gradient-to-r from-blue-50 to-blue-100 min-h-screen flex flex-col items-center">
-      <h1 className="text-4xl font-semibold text-gray-800 mb-6">Orders by Category</h1>
+      <h1 className="text-4xl font-semibold text-gray-800 mb-6">
+        Orders by Category
+      </h1>
 
       <div className="flex justify-center gap-6 mb-8">
         <select
@@ -183,7 +205,7 @@ const CategoryChart = () => {
               maintainAspectRatio: false,
               plugins: {
                 legend: {
-                  position: 'top',
+                  position: "top",
                   labels: {
                     font: {
                       size: 16,
@@ -192,7 +214,7 @@ const CategoryChart = () => {
                 },
                 title: {
                   display: true,
-                  text: 'Order Distribution by Category',
+                  text: "Order Distribution by Category",
                   font: {
                     size: 20,
                   },
@@ -203,7 +225,9 @@ const CategoryChart = () => {
             width={1000}
           />
         ) : (
-          <p className="text-center text-gray-600">No data available for the selected range.</p>
+          <p className="text-center text-gray-600">
+            No data available for the selected range.
+          </p>
         )}
       </div>
 
@@ -214,11 +238,17 @@ const CategoryChart = () => {
             key={category}
             className="p-6 rounded-lg shadow-xl text-center transition transform hover:scale-105 hover:shadow-2xl"
             style={{
-              background: `linear-gradient(to right, ${categoryColors[index] || '#FF6384'}, ${categoryColors[index] || '#FF6384'})`,
+              background: `linear-gradient(to right, ${
+                categoryColors[index] || "#FF6384"
+              }, ${categoryColors[index] || "#FF6384"})`,
             }}
           >
-            <h2 className="text-xl font-semibold text-white mb-2">{category}</h2>
-            <p className="text-3xl font-bold text-white">{categoryCounts[category]}</p>
+            <h2 className="text-xl font-semibold text-white mb-2">
+              {category}
+            </h2>
+            <p className="text-3xl font-bold text-white">
+              {categoryCounts[category]}
+            </p>
           </div>
         ))}
       </div>

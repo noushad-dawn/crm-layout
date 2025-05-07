@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from '../../api/axios';
 import React, { useEffect, useState } from 'react';
 import config from '../config';
 
@@ -13,7 +13,7 @@ const CustomerDirectory = () => {
 
   const fetchCustomerData = async () => {
     try {
-      const response = await axios.get(`${config.baseURL}/api/customers`);
+      const response = await api.get(`api/customers`);
       setCustomers(response.data.customers || []);
       setDetails(response.data.orders || []);
     } catch (error) {

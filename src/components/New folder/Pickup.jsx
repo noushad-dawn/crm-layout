@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import config from "../config";
+import api from '../../api/axios';
 
 const PickupForm = () => {
   const [formData, setFormData] = useState({
@@ -23,8 +22,8 @@ const PickupForm = () => {
 
   const fetchRoutes = async () => {
     try {
-      const response = await axios.get(
-        `${config.baseURL}/api/route-location/routes`
+      const response = await api.get(
+        `api/route-location/routes`
       );
       setRoutesData(response.data || []);
     } catch (error) {
@@ -54,7 +53,7 @@ const PickupForm = () => {
     )},${encodeURIComponent(formData.route)},${encodeURIComponent(
       formData.timeslot
     )}&Name=${encodeURIComponent(name)}`;
-    axios
+    api
       .get(url)
       .then((response) => {
         console.log("Response:", response.data);
@@ -80,7 +79,7 @@ const PickupForm = () => {
   useEffect(() => {
     const fetchDrivers = async () => {
       try {
-        const response = await axios.get(`${config.baseURL}/api/drivers`);
+        const response = await api.get(`api/drivers`);
         setDrivers(response.data);
       } catch (error) {
         console.error("Failed to fetch drivers:", error);
@@ -92,7 +91,7 @@ const PickupForm = () => {
   // Fetch pickups
   const fetchPickups = async () => {
     try {
-      const response = await axios.get(`${config.baseURL}/api/pickups`);
+      const response = await api.get(`api/pickups`);
       console.log(response.data);
       setPickups(response.data);
     } catch (error) {
@@ -115,8 +114,8 @@ const PickupForm = () => {
 
   const fetchLocations = async () => {
     try {
-      const response = await axios.get(
-        `${config.baseURL}/api/route-location/all-locations`
+      const response = await api.get(
+        `api/route-location/all-locations`
       );
       setLocations(response.data); // Ensure `response.data` matches your API response structure
     } catch (error) {
@@ -143,8 +142,8 @@ const PickupForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        `${config.baseURL}/api/pickups`,
+      const response = await api.post(
+        `api/pickups`,
         formData
       );
       alert("Pickup submitted successfully!");

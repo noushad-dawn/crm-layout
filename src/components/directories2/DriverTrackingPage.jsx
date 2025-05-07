@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from '../../api/axios';
 import config from "../config";
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -14,8 +14,8 @@ const DriverTrackingPage = () => {
 
   useEffect(() => {
     // Fetch all drivers on component mount
-    axios
-      .get(`${config.baseURL}/api/drivers/status`)
+    api
+      .get(`api/drivers/status`)
       .then((response) => {
         setDrivers(response.data);
         setVisibleDrivers(response.data.slice(0, pageSize)); // Load initial set of drivers

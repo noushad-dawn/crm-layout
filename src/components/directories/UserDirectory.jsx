@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from '../../api/axios';
 import React, { useEffect, useState } from 'react';
 import config from '../config';
 
@@ -9,7 +9,7 @@ const UserDirectory = () => {
   useEffect(() => {
     const fetchData = async () => {
       // Simulating fetching from a backend API
-      const resposne = await axios.get(`${config.baseURL}/api/users`);
+      const resposne = await api.get(`api/users`);
       setUsers(resposne.data.filter(user=>user.role!=='driver'));
     };
 
