@@ -3,28 +3,25 @@ import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import ClientLoginPage from "./components/authentication/ClientLoginPage";
 import LoginPage from "./components/authentication/LoginPage";
-import SideNavbar from "./sidenavbar/SideNavbar";
-import InventoryManagement from "./components/directories2/InventoryMngmt";
-import HomePage from "./components/firstpage/HomePage";
-import DashboardRoute from "./components/dashboard/DashboardRoute";
-import ProcessStatus from "./components/processpage/ProcessStatus";
-import OrderForm from "./components/firstpage/OrderForm";
-import Receipt from "./components/New folder/Receipt2";
-import CustomerDirectory from "./components/New folder/CustomerDirectory2";
-import DriverTrackingPage from "./components/directories2/DriverTrackingPage";
-import OrderDirectory from "./components/directories2/OrderDirectory2";
-import UserOrderDirectory from "./components/directories2/UserOrderDirectory";
-import PickupDirectory from "./components/New folder/PickupDirectory";
-import IronUnitDirectory from "./components/directories2/IronUnitDirectory";
-import ProductCount from "./components/directories2/ProductCount";
-import PaymentTable from "./components/PaymentTable";
-import PrintTag from "./components/New folder/PrintTag";
-import PickupPage from "./components/pickup/pickup";
-import OrderPage from "./components/order/order";
-import DriverStatus from "./components/firstpage/DriverStatus";
-import CrateTable from "./components/processpage/CrateTable"; 
-import CT from "./components/process status CT/processStatus";
-import AssignTable from "./components/firstpage/OtbD";
+import SideNavbar from "./components/sidenavbar/SideNavbar";
+import HomeRoute from "./components/home/homeRoute";
+import PickupRoute from "./components/pickup/pickupRoute";
+import OrderRoute from "./components/order/orderRoute";
+import DriverStatus from "./components/driver/sub/DriverStatus";
+import AssignTable from "./components/driver/sub/OtbD";
+import InventoryManagement from "./components/inventory/sub/InventoryMngmt";
+import CreateTable from "./components/inventory/sub/CrateTable";
+import ProcessRoute from "./components/process/ProcessRoute";
+import CustomerDirectory from "./components/directories/sub/CustomerDirectory";
+import DriverTrackingPage from "./components/directories/sub/DriverTrackingPage";
+import IronUnitDirectory from "./components/directories/sub/IronUnitDirectory";
+import OrderDirectory from "./components/directories/sub/OrderDirectory";
+import PickupDirectory from "./components/directories/sub/PickupDirectory";
+import ProductCount from "./components/directories/sub/ProductCount";
+import UserOrderDirectory from "./components/directories/sub/UserOrderDirectory";
+import PaymentTable from "./components/payment/sub/PaymentTable";
+import Receipt from "./components/Extra/Receipt2";
+import PrintTag from "./components/Extra/PrintTag";
 
 function App() {
   const isClientValidated = () => {
@@ -44,7 +41,11 @@ function App() {
   };
 
   const ClientProtectedRoute = ({ children }) => {
-    return isClientValidated() ? children : <Navigate to="/client-login" replace />;
+    return isClientValidated() ? (
+      children
+    ) : (
+      <Navigate to="/client-login" replace />
+    );
   };
 
   const AuthProtectedRoute = ({ children }) => {
@@ -71,7 +72,7 @@ function App() {
     <Routes>
       {/* Public routes */}
       <Route path="/client-login" element={<ClientLoginPage />} />
-      
+
       {/* Client-protected routes */}
       <Route
         path="/login"
@@ -81,12 +82,7 @@ function App() {
           </ClientProtectedRoute>
         }
       />
-      <Route
-        path="/"
-        element={
-          <Navigate to="dashboard" replace/>
-        }
-      />
+      <Route path="/" element={<Navigate to="dashboard" replace />} />
 
       {/* Fully protected routes (require both client validation and auth) */}
       <Route
@@ -98,39 +94,70 @@ function App() {
           </ClientProtectedRoute>
         }
       >
-        <Route index element={<HomePage />} />
-        <Route path="home" element={<HomePage />} />
-        
-        {/* Role-protected nested routes */}
+        <Route index element={<HomeRoute />} />
+        <Route path="home" element={<HomeRoute />} />
+
         <Route
           path="dashboard"
           element={
             <RoleProtectedRoute allowedRoles={["user", "admin"]}>
-              <DashboardRoute />
+              <HomeRoute />
             </RoleProtectedRoute>
           }
         />
         <Route
-          path="process-status"
+          path="pickup"
           element={
             <RoleProtectedRoute allowedRoles={["user", "admin"]}>
-              <ProcessStatus />
+              <PickupRoute />
             </RoleProtectedRoute>
           }
         />
         <Route
-          path="order-form"
+          path="order"
           element={
             <RoleProtectedRoute allowedRoles={["user", "admin"]}>
-              <OrderForm />
+              <OrderRoute />
             </RoleProtectedRoute>
           }
         />
         <Route
-          path="receipt/:orderId"
+          path="driver/ready"
           element={
             <RoleProtectedRoute allowedRoles={["user", "admin"]}>
-              <Receipt />
+              <AssignTable />
+            </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="driver/status"
+          element={
+            <RoleProtectedRoute allowedRoles={["user", "admin"]}>
+              <DriverStatus />
+            </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="inventorymanagement"
+          element={
+            <RoleProtectedRoute allowedRoles={["user", "admin"]}>
+              <InventoryManagement />
+            </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="inventorymanagement/cratetable"
+          element={
+            <RoleProtectedRoute allowedRoles={["user", "admin"]}>
+              <CreateTable />
+            </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="process"
+          element={
+            <RoleProtectedRoute allowedRoles={["user", "admin"]}>
+              <ProcessRoute />
             </RoleProtectedRoute>
           }
         />
@@ -147,14 +174,6 @@ function App() {
           element={
             <RoleProtectedRoute allowedRoles={["user", "admin"]}>
               <DriverTrackingPage />
-            </RoleProtectedRoute>
-          }
-        />
-        <Route
-          path="order-directory"
-          element={
-            <RoleProtectedRoute allowedRoles={["user", "admin"]}>
-              <OrderDirectory />
             </RoleProtectedRoute>
           }
         />
@@ -199,58 +218,18 @@ function App() {
           }
         />
         <Route
-          path="pickup"
+          path="receipt/:orderId"
           element={
             <RoleProtectedRoute allowedRoles={["user", "admin"]}>
-              <PickupPage/>
+              <Receipt />
             </RoleProtectedRoute>
           }
         />
         <Route
-          path="order"
+          path="order-directory"
           element={
             <RoleProtectedRoute allowedRoles={["user", "admin"]}>
-              <OrderPage/>
-            </RoleProtectedRoute>
-          }
-        />
-        <Route
-          path="driver/ready"
-          element={
-            <RoleProtectedRoute allowedRoles={["user", "admin"]}>
-              <AssignTable/>
-            </RoleProtectedRoute>
-          }
-        />
-        <Route
-          path="driver/status"
-          element={
-            <RoleProtectedRoute allowedRoles={["user", "admin"]}>
-              <DriverStatus/>
-            </RoleProtectedRoute>
-          }
-        />
-        <Route
-          path="process-status/CrateTable"
-          element={
-            <RoleProtectedRoute allowedRoles={["user", "admin"]}>
-              <CrateTable/>
-            </RoleProtectedRoute>
-          }
-        />
-        <Route
-          path="process-status/InventoryManagement"
-          element={
-            <RoleProtectedRoute allowedRoles={["user", "admin"]}>
-              <InventoryManagement/>
-            </RoleProtectedRoute>
-          }
-        />
-        <Route
-          path="CT"
-          element={
-            <RoleProtectedRoute allowedRoles={["user", "admin"]}>
-              <CT/>
+              <OrderDirectory />
             </RoleProtectedRoute>
           }
         />
@@ -270,7 +249,6 @@ function App() {
 
       {/* Catch-all route */}
       <Route path="*" element={<Navigate to="/client-login" replace />} />
-      
     </Routes>
   );
 }
