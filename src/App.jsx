@@ -6,7 +6,7 @@ import LoginPage from "./components/authentication/LoginPage";
 import SideNavbar from "./components/sidenavbar/SideNavbar";
 import HomeRoute from "./components/home/homeRoute";
 import PickupRoute from "./components/pickup/pickupRoute";
-import OrderRoute from "./components/order/orderRoute";
+import OrderForm from "./components/order/sub/OrderForm";
 import DriverStatus from "./components/driver/sub/DriverStatus";
 import AssignTable from "./components/driver/sub/OtbD";
 import InventoryManagement from "./components/inventory/sub/InventoryMngmt";
@@ -20,8 +20,9 @@ import PickupDirectory from "./components/directories/sub/PickupDirectory";
 import ProductCount from "./components/directories/sub/ProductCount";
 import UserOrderDirectory from "./components/directories/sub/UserOrderDirectory";
 import PaymentTable from "./components/payment/sub/PaymentTable";
-import Receipt from "./components/Extra/Receipt2";
+import Receipt from "./components/payment/sub/Receipt2";
 import PrintTag from "./components/Extra/PrintTag";
+import ErrorBoundary from "./components/errorBoundry/errorBoundry"
 
 function App() {
   const isClientValidated = () => {
@@ -117,7 +118,7 @@ function App() {
           path="order"
           element={
             <RoleProtectedRoute allowedRoles={["user", "admin"]}>
-              <OrderRoute />
+              <OrderForm />
             </RoleProtectedRoute>
           }
         />
@@ -218,7 +219,7 @@ function App() {
           }
         />
         <Route
-          path="receipt/:orderId"
+          path="/payment/expenses"
           element={
             <RoleProtectedRoute allowedRoles={["user", "admin"]}>
               <Receipt />
@@ -229,7 +230,9 @@ function App() {
           path="order-directory"
           element={
             <RoleProtectedRoute allowedRoles={["user", "admin"]}>
-              <OrderDirectory />
+              <ErrorBoundary>
+                <OrderDirectory />
+              </ErrorBoundary>
             </RoleProtectedRoute>
           }
         />

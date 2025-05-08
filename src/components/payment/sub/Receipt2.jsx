@@ -1,4 +1,4 @@
-import api from '../../api/axios';
+import api from "../../../api/axios";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { jsPDF } from "jspdf";
@@ -16,10 +16,22 @@ const Receipt = () => {
     pageSize: "A6",
     scale: 100,
   });
+  const [company, setCompany] = useState(null);
 
   useEffect(() => {
     if (orderData) fetchPrice();
+    fetchCompany();
   }, [orderData]);
+
+  const fetchCompany = async () => {
+    try {
+      const res = await api.get('/company');
+      setCompany(res.data || null);
+    } catch (err) {
+      console.error('Error fetching company:', err);
+      setCompany(null);
+    }
+  };
 
   const fetchPrice = async () => {
     try {
@@ -105,7 +117,6 @@ const Receipt = () => {
     }
   };
 
-  // Handle form data updates
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -114,7 +125,6 @@ const Receipt = () => {
     }));
   };
 
-  // Submit print job
   const handlePrint = async () => {
     console.log(formData);
     if (!formData.filePath || !formData.printerName) {
@@ -149,7 +159,7 @@ const Receipt = () => {
       },
       autoPaging: true,
       margin: [10, 10, 10, 10],
-      html2canvas: { scale: 0.36 }, // Ensure higher quality of rendering
+      html2canvas: { scale: 0.36 },
     });
   };
 
@@ -177,7 +187,6 @@ const Receipt = () => {
 
   const deliveryCharges = delivery ? 50 : 0;
   const total = subtotal + deliveryCharges - discount;
-  // const totalUnits = units.reduce((acc, unit) => acc + unit, 0);
   const totalUnits = units.reduce((sum, unit, i) => {
     const subUnitTotal =
       Array.isArray(subUnits[i]) && subUnits[i]
@@ -193,23 +202,27 @@ const Receipt = () => {
         className="receipt w-[5.5in] mx-auto p-4 bg-white shadow-md border border-gray-300 rounded-lg text-sm"
         style={{ display: "block" }}
       >
-        {/* Prime Laundry Header */}
+        {/* Company Header */}
         <div className="mb-2 flex justify-center">
-          <img
-            src="../assets/images/logo.png"
-            alt="Logo"
-            className="w-30 h-20"
-          />
+          {company?.logo && (
+            <img
+              src={company.logo}
+              alt="Company Logo"
+              className="w-30 h-20"
+            />
+          )}
         </div>
         {/* QR Code, Invoice Details, and Customer Details */}
         <div className="flex justify-between items-start">
           {/* QR Code */}
           <div className="mr-4">
-            <img
-              src="../assets/images/QR.png"
-              alt="Logo"
-              className="w-20 h-20"
-            />
+            {company?.qrCode && (
+              <img
+                src={company.qrCode}
+                alt="QR Code"
+                className="w-20 h-20"
+              />
+            )}
           </div>
           {/* Invoice Details */}
           <div className="flex-1 text-left">
@@ -401,12 +414,10 @@ const Receipt = () => {
           <input
             type="text"
             name="filePath"
-            // placeholder="Enter file path"
             value={formData.filePath}
             onChange={handleChange}
             readOnly
             disabled
-            // onChange={handleChange}
             className="w-full p-2 border rounded-md mb-3"
           />
 
@@ -449,21 +460,21 @@ const Receipt = () => {
       <style>{`
                  @media print {
     body * {
-        visibility: hidden; /* Hide everything on the page */
+        visibility: hidden;
     }
     .receipt, .receipt * {
-        visibility: visible; /* Show only the receipt */
+        visibility: visible;
     }
     .receipt {
         position: absolute;
         left: 0;
         top: 0;
-        width: 100%; /* Ensure full width */
-        height: auto; /* Allow content to expand fully */
+        width: 100%;
+        height: auto;
     }
     @page {
-        size: 5.5in 8.5in; /* Set the size of the printed page */
-        margin: 0; /* Remove default margins */
+        size: 5.5in 8.5in;
+        margin: 0;
     }
 }
               `}</style>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import api from '../../../api/axios';
 import Select, { components } from "react-select";
 import generateNewOrderId from "../../RandomIdGeneratror";
-// import garmentList from "./garmentList";
 import OrderTable from "../../Extra/OrderTable2";
 
 const OrderForm = () => {

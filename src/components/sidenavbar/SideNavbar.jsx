@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { NavLink, useLocation, useNavigate   } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   FiHome,
   FiTruck,
@@ -14,65 +14,82 @@ import {
   FiLogOut,
 } from "react-icons/fi";
 import { GiWashingMachine } from "react-icons/gi";
+import api from "../../api/axios";
 
 const SideNavbar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [activeSubmenu, setActiveSubmenu] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+
   const location = useLocation();
   const navigate = useNavigate();
+  const [company, setCompany] = useState(null);
 
   useEffect(() => {
     // Check if the current path is the root or dashboard
     if (location.pathname === "/") {
       navigate("/dashboard");
     }
+    fetchCompany();
   }, [location.pathname]);
+
+  const fetchCompany = async () => {
+    setIsLoading(true);
+    try {
+      const res = await api.get("/company");
+      setCompany(res.data || null);
+    } catch (err) {
+      console.error("Error fetching company:", err);
+      setCompany(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const toggleSubmenu = (menu) => {
     setActiveSubmenu(activeSubmenu === menu ? null : menu);
   };
 
   const handleLogout = () => {
-    // Add your logout logic here
     console.log("User logged out");
   };
 
   const navItems = [
-    { 
-      name: 'Home', 
-      icon: <FiHome className="text-lg" />, 
-      path: '/dashboard',
+    {
+      name: "Home",
+      icon: <FiHome className="text-lg" />,
+      path: "/dashboard",
     },
-    { 
-      name: 'Pick-up', 
+    {
+      name: "Pick-up",
       icon: <FiTruck className="text-lg" />,
-      path: '/pickup',
+      path: "/pickup",
     },
-    { 
-      name: 'Order', 
+    {
+      name: "Order",
       icon: <FiPackage className="text-lg" />,
-      path: '/order',
+      path: "/order",
     },
-    { 
-      name: 'Driver', 
+    {
+      name: "Driver",
       icon: <FiUser className="text-lg" />,
       submenu: [
-        { name: 'Ready to Deliver', path: '/driver/ready' },
-        { name: 'Driver Status', path: '/driver/status' }
-      ]
+        { name: "Ready to Deliver", path: "/driver/ready" },
+        { name: "Driver Status", path: "/driver/status" },
+      ],
     },
-    { 
-      name: 'Inventory', 
+    {
+      name: "Inventory",
       icon: <FiBox className="text-lg" />,
       submenu: [
-        { name: 'Inventory Management', path: '/inventorymanagement' },
-        { name: 'Crates of Orders', path: '/inventorymanagement/cratetable' }
-      ]
+        { name: "Inventory Management", path: "/inventorymanagement" },
+        { name: "Crates of Orders", path: "/inventorymanagement/cratetable" },
+      ],
     },
-    { 
-      name: 'Process', 
+    {
+      name: "Process",
       icon: <FiClock className="text-lg" />,
-      path: '/process',
+      path: "/process",
     },
     {
       name: "Directories",
@@ -113,13 +130,31 @@ const SideNavbar = () => {
         <div className="flex items-center justify-between p-4 border-b border-gray-100">
           {isOpen ? (
             <div className="flex items-center">
-              <GiWashingMachine className="text-3xl mr-3 text-blue-400" />
+              {company?.logo ? (
+                <img
+                  src={company.logo}
+                  alt=""
+                  className="w-8 h-8 object-contain mr-3"
+                />
+              ) : (
+                <GiWashingMachine className="text-3xl mr-3 text-blue-400" />
+              )}
               <span className="text-xl font-semibold text-gray-800">
-                Prime Laundry
+                {company?.name || "Prime Laundry"}
               </span>
             </div>
           ) : (
-            <span className="text-xl font-semibold text-gray-800">PL</span>
+            <div className="flex justify-center w-full">
+              {company?.logo ? (
+                <img
+                  src={company.logo}
+                  alt="Company Logo"
+                  className="w-8 h-8 object-contain"
+                />
+              ) : (
+                <span className="text-xl font-semibold text-gray-800">PL</span>
+              )}
+            </div>
           )}
 
           <button
@@ -156,8 +191,10 @@ const SideNavbar = () => {
                   <button
                     onClick={() => toggleSubmenu(item.name)}
                     className={`flex items-center justify-between w-full p-3 rounded-lg transition-all duration-200 ${
-                      activeSubmenu === item.name || 
-                      item.submenu.some(subItem => location.pathname === subItem.path)
+                      activeSubmenu === item.name ||
+                      item.submenu.some(
+                        (subItem) => location.pathname === subItem.path
+                      )
                         ? "bg-blue-50 text-blue-600"
                         : "text-gray-600 hover:bg-gray-50 hover:text-gray-800"
                     }`}
@@ -219,6 +256,15 @@ const SideNavbar = () => {
 
         {/* Footer with Logout Button */}
         <div className="border-t border-gray-100 p-4">
+          {isOpen && company?.qrCode && (
+            <div className="mb-4 flex justify-center">
+              <img
+                src={company.qrCode}
+                alt="QR Code"
+                className="w-24 h-24 object-contain"
+              />
+            </div>
+          )}
           <button
             onClick={handleLogout}
             className={`flex items-center w-full p-3 rounded-lg transition-all duration-200 text-gray-600 hover:bg-gray-50 hover:text-gray-800`}

@@ -199,7 +199,7 @@ const OrderDirectory = () => {
                       <td className="py-2 px-4">{tatDisplay}</td>
                       <td className="py-2 px-4">{order.category.join(", ")}</td>
                       <td className="py-2 px-4">
-                        {order.products
+                        {/* {order.products
                           .map((prod, index) => {
                             let unit = order.units[index];
                             let cat = order.category[index];
@@ -208,7 +208,17 @@ const OrderDirectory = () => {
                             }
                             return `${prod}: ${unit}`;
                           })
-                          .join(", ")}
+                          .join(", ")} */}
+                          {Array.isArray(order.products) && Array.isArray(order.units) && Array.isArray(order.category)
+                          ? order.products.map((prod, index) => {
+                              let unit = order.units[index] || "";
+                              const cat = order.category[index] || "";
+                              if (typeof cat === "string" && cat.includes("Kilowise")) {
+                                unit = `${unit}KG`;
+                              }
+                              return `${prod || ""}: ${unit}`;
+                            }).join(", ")
+                          : "-"}
                       </td>
                       <td className="py-2 px-4">
                         {order.garmentDetails
